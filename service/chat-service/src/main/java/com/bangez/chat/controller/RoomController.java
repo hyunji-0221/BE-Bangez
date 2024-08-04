@@ -1,5 +1,6 @@
 package com.bangez.chat.controller;
 import com.bangez.chat.domain.dto.Messenger;
+import com.bangez.chat.domain.dto.RoomDto;
 import com.bangez.chat.domain.model.RoomModel;
 import com.bangez.chat.service.impl.RoomServiceImpl;
 
@@ -17,14 +18,14 @@ public class RoomController {
     private final RoomServiceImpl roomServiceImpl;
 
     @GetMapping(value = "/open-room/{userId}/{receiverId}")
-    public Mono<RoomModel> test(@PathVariable("userId") String userId,
-                                @PathVariable("receiverId")String receiverId) {
+    public Mono<RoomDto> test(@PathVariable("userId") String userId,
+                              @PathVariable("receiverId")String receiverId) {
         log.info("RoomController userId / receiverId: {} / {}",userId,receiverId);
         return roomServiceImpl.openRoom(userId,receiverId);
     }
 
     @GetMapping(value = "/get-room-list/{userId}")
-    public Flux<RoomModel> getRoomList(@PathVariable("userId") String userId) {
+    public Flux<RoomDto> getRoomList(@PathVariable("userId") String userId) {
         log.info("userId: {}",userId);
         return roomServiceImpl.getRoomList(userId);
     }

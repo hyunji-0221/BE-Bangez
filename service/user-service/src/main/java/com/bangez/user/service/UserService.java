@@ -31,4 +31,6 @@ public interface UserService {
     }
 
     Messenger save(UserDto t);
+
+    UserDto getDetail(Long userId);
 }

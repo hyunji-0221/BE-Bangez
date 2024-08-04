@@ -1,4 +1,5 @@
 package com.bangez.chat.service.impl;
+import com.bangez.chat.domain.dto.ChatDto;
 import com.bangez.chat.domain.dto.Messenger;
 import com.bangez.chat.domain.model.ChatModel;
 import com.bangez.chat.repository.ChatRepository;
@@ -14,6 +15,8 @@ import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,30 +25,31 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService{
     private final ChatRepository chatRepository;
-    private final Map<String, Sinks.Many<ServerSentEvent<ChatModel>>> chatSinks = new HashMap<>();
-    private final Map<String, Sinks.Many<ServerSentEvent<ChatModel>>> notificationSinks = new HashMap<>();
+    private final Map<String, Sinks.Many<ServerSentEvent<ChatDto>>> chatSinks = new HashMap<>();
+    private final Map<String, Sinks.Many<ServerSentEvent<ChatDto>>> notificationSinks = new HashMap<>();
 
     @Override
-    public Flux<ServerSentEvent<ChatModel>> connectChat(String roomId) {
+    public Flux<ServerSentEvent<ChatDto>> connectChat(String roomId) {
         log.info("connectChat service roomId : {}", roomId);
 
-        Sinks.Many<ServerSentEvent<ChatModel>> sink = chatSinks.computeIfAbsent(roomId, key -> {
+        Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.computeIfAbsent(roomId, key -> {
             log.info("Creating new sink for roomId : {}", roomId);
-            Sinks.Many<ServerSentEvent<ChatModel>> chatSink = Sinks.many().replay().all();
+            Sinks.Many<ServerSentEvent<ChatDto>> chatSink = Sinks.many().replay().all();
             chatRepository.findByChatRoomId(roomId)
+                    .map(this::convertToDto)
                     .map(chat -> ServerSentEvent.builder(chat).build())
                     .doOnNext(chatSink::tryEmitNext)
                     .subscribe();
             return chatSink;
         });
 
-        Flux<ServerSentEvent<ChatModel>> heartbeatFlux = Flux.interval(Duration.ofSeconds(30))
-                .map(tick -> ServerSentEvent.<ChatModel>builder()
+        Flux<ServerSentEvent<ChatDto>> heartbeatFlux = Flux.interval(Duration.ofSeconds(30))
+                .map(tick -> ServerSentEvent.<ChatDto>builder()
                         .event("heartbeat")
-                        .data(new ChatModel()) // 빈 ChatModel을 데이터로 보냄
+                        .data(new ChatDto())
                         .build());
 
-        Flux<ServerSentEvent<ChatModel>> chatFlux = sink.asFlux()
+        Flux<ServerSentEvent<ChatDto>> chatFlux = sink.asFlux()
                 .mergeWith(heartbeatFlux);
 
         log.info("Existing sink for roomId : {}", roomId);
@@ -53,9 +57,10 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public Flux<ServerSentEvent<ChatModel>> connectionNotification(String userId){
-        Sinks.Many<ServerSentEvent<ChatModel>> sink = Sinks.many().replay().all();
+    public Flux<ServerSentEvent<ChatDto>> connectionNotification(String userId){
+        Sinks.Many<ServerSentEvent<ChatDto>> sink = Sinks.many().replay().all();
         chatRepository.findByReceiverIdAndReadFalse(userId)
+                .map(this::convertToDto)
                 .map(chat -> ServerSentEvent.builder(chat)
                         .event("notification")
                         .data(chat)
@@ -66,20 +71,20 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public Mono<ChatModel> saveMessage(ChatModel chatModel) {
-        log.info("saveMessage service: {}", chatModel);
-        chatModel.setTimeStamp(Instant.now().toString());
-        return chatRepository.save(chatModel)
+    public Mono<ChatDto> saveMessage(ChatDto chatDto) {
+        log.info("saveMessage service: {}", chatDto);
+        chatDto.setTimeStamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+        return chatRepository.save(convertToEntity(chatDto))
+                .map(this::convertToDto)
                 .doOnSuccess(savedMessage -> {
                     log.info("Saved message: {}", savedMessage);
-                    Sinks.Many<ServerSentEvent<ChatModel>> sink = chatSinks.get(savedMessage.getChatRoomId());
+                    Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.get(savedMessage.getChatRoomId());
                     if (sink != null) {
                         sink.tryEmitNext(ServerSentEvent.builder(savedMessage).build());
                     }
                     if (!savedMessage.isRead()) { // savedMessage.isRead() == false
                         notifyUnreadMessage(savedMessage);
                     }
-
                 });
     }
 
@@ -96,20 +101,20 @@ public class ChatServiceImpl implements ChatService{
 
     private void handleCancel(String roomId) {
         log.info("service doOnCancel roomId : {}", roomId);
-        Sinks.Many<ServerSentEvent<ChatModel>> sink = chatSinks.remove(roomId);
+        Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.remove(roomId);
         if (sink != null) sink.tryEmitComplete();
     }
 
-    private void notifyUnreadMessage(ChatModel chatModel) {
-        Sinks.Many<ServerSentEvent<ChatModel>> notificationSink = notificationSinks.get(chatModel.getReceiverId());
+    private void notifyUnreadMessage(ChatDto chatDto) {
+        Sinks.Many<ServerSentEvent<ChatDto>> notificationSink = notificationSinks.get(chatDto.getReceiverId());
         if (notificationSink != null) {
-            notificationSink.tryEmitNext(ServerSentEvent.builder(chatModel).build());
+            notificationSink.tryEmitNext(ServerSentEvent.builder(chatDto).build());
         }
     }
 
     private void handleNotificationCancel(String userId) {
         log.info("service doOnCancel userId : {}", userId);
-        Sinks.Many<ServerSentEvent<ChatModel>> notificationSink = notificationSinks.remove(userId);
+        Sinks.Many<ServerSentEvent<ChatDto>> notificationSink = notificationSinks.remove(userId);
         if (notificationSink != null) notificationSink.tryEmitComplete();
     }
     

@@ -6,6 +6,7 @@ import com.bangez.gateway.domain.model.UserModel;
 import com.bangez.gateway.domain.vo.Registration;
 import com.bangez.gateway.domain.vo.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.userinfo.DefaultReactiveOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService;
@@ -35,24 +36,24 @@ public class PrincipalOauthUserService implements ReactiveOAuth2UserService<OAut
                                         .flatMap(clientId -> Mono.just(Registration.valueOf(clientId.toUpperCase())))
                                         .flatMap(registration ->
                                                         Mono.just(OAuth2UserDTO.of(registration, attributes))
-//                .flatMap(oauth2UserDTO ->
-//                    webClient.post()
-//                    .uri("lb://user-service/auth/oauth2/" + registration.name().toLowerCase())
-//                    .accept(MediaType.APPLICATION_JSON)
-//                    .bodyValue(oauth2UserDTO)
-//                    .retrieve()
-//                    .bodyToMono(PrincipalUserDetails.class)
-//                )
-                                                                .flatMap(oAuth2UserInfo ->
-                                                                        Mono.just(new PrincipalUserDetails(
-                                                                                UserModel.builder()
-                                                                                        .email(oAuth2UserInfo.email())
-                                                                                        .name(oAuth2UserInfo.name())
-                                                                                        .profile(oAuth2UserInfo.profile())
-                                                                                        .roles(List.of(Role.ROLE_USER))
-                                                                                        .build(),
-                                                                                attributes
-                                                                        )))
+                                                                .flatMap(oauth2UserDTO ->
+                                                                        webClient.post()
+                                                                                .uri("lb://user-service/auth/oauth2/" + registration.name().toLowerCase())
+                                                                                .accept(MediaType.APPLICATION_JSON)
+                                                                                .bodyValue(oauth2UserDTO)
+                                                                                .retrieve()
+                                                                                .bodyToMono(PrincipalUserDetails.class)
+                                                                )
+//                                                                .flatMap(oAuth2UserInfo ->
+//                                                                        Mono.just(new PrincipalUserDetails(
+//                                                                                        UserModel.builder()
+//                                                                                                .email(oAuth2UserInfo.email())
+//                                                                                                .name(oAuth2UserInfo.name())
+//                                                                                                .profile(oAuth2UserInfo.profile())
+//                                                                                                .roles(List.of(Role.ROLE_USER))
+//                                                                                                .build(),
+//                                                                                        attributes
+//                                                                                )))
                                         )
                 );
     }

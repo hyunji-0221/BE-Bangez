@@ -1,5 +1,6 @@
 package com.bangez.chat.service.impl;
 import com.bangez.chat.domain.dto.Messenger;
+import com.bangez.chat.domain.dto.RoomDto;
 import com.bangez.chat.domain.model.RoomModel;
 import com.bangez.chat.repository.RoomRepository;
 import com.bangez.chat.service.RoomService;
@@ -18,27 +19,26 @@ import java.time.ZoneId;
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
-    LocalDateTime time = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
     private final RoomRepository roomRepository;
 
     @Override
-    public Mono<RoomModel> openRoom(String userId, String receiverId) {
-        log.info("service time : {}", time);
+    public Mono<RoomDto> openRoom(String userId, String receiverId) {
         return roomRepository.getRoomModelBySenderIdAndReceiverId(userId, receiverId)
-                .map(roomModel -> roomModel)
                 .switchIfEmpty(roomRepository.save(RoomModel.builder()
                         .roomTitle("test1")
                         .senderId(userId)
                         .receiverId(receiverId)
-                        .createDate(time)
+                        .createDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                         .build())
-                );
+                )
+                .map(this::convertToDto);
     }
 
     @Override
-    public Flux<RoomModel> getRoomList(String userId) {
-        return roomRepository.getRoomModelsBySenderId(userId);
+    public Flux<RoomDto> getRoomList(String userId) {
+        return roomRepository.getRoomModelsBySenderId(userId)
+                .map(this::convertToDto);
     }
 
     @Override

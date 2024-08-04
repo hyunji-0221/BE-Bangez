@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,7 +18,7 @@ public class ChatDto {
     private String senderId;
     private String receiverId;
     private String message;
-    private String timeStamp;
+    private LocalDateTime timeStamp;
 
     private boolean read; //메시지 상태("안읽음", "읽음") 알림을 위한 필드
 }

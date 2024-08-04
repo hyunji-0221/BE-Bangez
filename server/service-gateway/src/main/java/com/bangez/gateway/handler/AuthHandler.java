@@ -1,4 +1,4 @@
-package com.bangez.gateway.service.impl;
+package com.bangez.gateway.handler;
 
 import com.bangez.gateway.domain.dto.LoginDTO;
 import com.bangez.gateway.domain.model.PrincipalUserDetails;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthHandler implements AuthService {
     private final WebClient webClient;
     private final JwtTokenProvider jwtTokenProvider;
 

@@ -9,5 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PointRepository extends JpaRepository<PointModel, Long>{
-    Optional<PointModel> findByUserId(Long userId);
+    PointModel findByUserId(Long userId);
+
+    Boolean existsByUserId(Long userId);
 }

@@ -1,5 +1,6 @@
 package com.bangez.tx.controller;
 
+import com.bangez.tx.domain.dto.TxDto;
 import com.bangez.tx.domain.model.TxModel;
 import com.bangez.tx.service.impl.PointServiceImpl;
 import com.bangez.tx.service.impl.TxServiceImpl;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +23,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@RequestMapping("/api/tx")
+@Slf4j
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
-@ApiResponses(value = {
-        @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
-        @ApiResponse(responseCode = "404", description = "dd")})
-@Log4j2
 @RequiredArgsConstructor
 public class TxController {
 
@@ -48,16 +45,14 @@ public class TxController {
     }
 
     @PostMapping("/add/{imp_uid}")
-    public IamportResponse<Payment> addIamport(@RequestHeader("Authorization") String accessToken,
-                                               @PathVariable("imp_uid") String imp_uid) {
-        Long userId = 100L;
-
+    public IamportResponse<Payment> addIamport(@PathVariable("imp_uid") String imp_uid,
+                                               @PathVariable("userId") Long userId) {
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
 
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
 
-        TxModel tx = TxModel.builder()
+        TxDto tx = TxDto.builder()
                 .impUid(payment.getResponse().getImpUid())
                 .merchantUid(payment.getResponse().getMerchantUid())
                 .propertyName(payment.getResponse().getName())
@@ -66,6 +61,7 @@ public class TxController {
                 .buyerName(payment.getResponse().getBuyerName())
                 .buyerTel(payment.getResponse().getBuyerTel())
                 .txDate(date.format(formatter))
+                .userId(userId)
                 .build();
         service.saveTx(tx);
         pointService.savePoint(payment.getResponse().getAmount(), userId);
@@ -73,16 +69,14 @@ public class TxController {
         return payment;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<TxModel>> getTxList(@RequestHeader("Authorization") String accessToken) {
-        List<TxModel> txList = service.getTxList();
-        return ResponseEntity.ok(txList);
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<List<TxDto>> getTxList(@PathVariable("userId") Long id) {
+        return ResponseEntity.ok(service.getTxList());
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<TxModel> getTxDetail(@RequestHeader("Authorization") String accessToken,
-                                               @PathVariable("id") Long id){
-        TxModel tx = service.getTxDetail(id);
+    @GetMapping("/detail/{userId}")
+    public ResponseEntity<TxDto> getTxDetail(@PathVariable("userId") Long id) {
+        TxDto tx = service.getTxDetail(id);
         return ResponseEntity.ok(tx);
     }
 

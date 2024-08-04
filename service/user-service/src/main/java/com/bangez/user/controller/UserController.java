@@ -24,4 +24,9 @@ public class UserController {
         return ResponseEntity.ok(service.save(dto));
     }
 
+    @GetMapping("/detail/{userId}")
+    public ResponseEntity<UserDto> getDetail(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(service.getDetail(userId));
+    }
+
 }

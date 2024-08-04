@@ -1,9 +1,9 @@
 package com.bangez.user.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bangez.user.domain.dto.OAuth2UserDto;
+import com.bangez.user.domain.dto.OAuthUserDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.bangez.user.domain.dto.LoginDto;
 import com.bangez.user.domain.dto.PrincipalUserDetails;
@@ -35,9 +35,14 @@ public class OAuthController {
 //    }
 
     @PostMapping("/login/local")
-    public PrincipalUserDetails localLogin(@RequestBody LoginDto dto){
+    public PrincipalUserDetails localLogin(@RequestBody LoginDto dto) {
         log.info("로컬 로그인 메소드");
         return service.login(dto);
     }
 
+    @PostMapping("/oauth2/{registration}")
+    public ResponseEntity<LoginDto> oauthJoin(@RequestBody OAuth2UserDto dto) {
+        log.info("user oauth2 파라미터: {} ", dto);
+        return ResponseEntity.ok(service.oauthJoin(dto));
+    }
 }

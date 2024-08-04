@@ -1,7 +1,7 @@
 package com.bangez.tx.service.impl;
 
 
-
+import com.bangez.tx.domain.dto.PointDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +27,14 @@ public class PointServiceImpl implements PointService {
 
     LocalDateTime date = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
+
     @Override
     public void savePoint(BigDecimal amount, Long userId) {
-        PointModel model = pointRepository.findByUserId(userId).orElseGet(null);
-        int point = model.getPoint();
-        int intAmount = amount.intValue();
-        point += intAmount / 500;
-        if(intAmount % 500 != 0){
-            throw new IllegalArgumentException("500원 단위로 결제해주세요.");
-        }else{
+        int point = 0;
+        if (pointRepository.existsByUserId(userId)) {
+            PointModel model = pointRepository.findByUserId(userId);
+            point = model.getPoint();
+            point += amount.intValue() / 100;
             PointModel pointModel = PointModel.builder()
                     .pointId(model.getPointId())
                     .point(point)
@@ -43,27 +42,43 @@ public class PointServiceImpl implements PointService {
                     .lastChargeDate(date.format(formatter))
                     .build();
             pointRepository.save(pointModel);
+        } else {
+            point = amount.intValue() / 100;
+            PointModel pointModel = PointModel.builder()
+                    .point(point)
+                    .userId(userId)
+                    .lastChargeDate(date.format(formatter))
+                    .build();
+            pointRepository.save(pointModel);
         }
     }
+
     @Override
-    public Optional<PointModel> getPointDetail(Long id) {
-        return pointRepository.findByUserId(id);
+    public int getPointDetail(Long id) {
+        if (!pointRepository.existsByUserId(id)) {
+            return 0;
+        } else {
+            return pointRepository.findByUserId(id).getPoint();
+        }
     }
+
     @Override
-    public PointModel deductionPoint(Long userId) {
+    public PointDto deductionPoint(Long userId) {
         int deductedPoint = 0;
-        PointModel point = pointRepository.findByUserId(userId).orElseGet(null);
-        if(point.getPoint() <= 0) {
+        PointModel point = pointRepository.findByUserId(userId);
+        if (point.getPoint() <= 0) {
             throw new IllegalArgumentException("포인트가 부족합니다.");
-        }else {
+        } else {
             deductedPoint = point.getPoint() - 1;
         }
-        return pointRepository.save(PointModel.builder()
+        return convertToDto(pointRepository.save(PointModel.builder()
                 .pointId(point.getPointId())
                 .userId(userId)
                 .point(deductedPoint)
                 .lastChargeDate(date.format(formatter))
-                .build());
+                .build())
+        );
+
     }
 }
 

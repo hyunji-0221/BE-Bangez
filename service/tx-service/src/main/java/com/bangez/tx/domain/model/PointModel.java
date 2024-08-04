@@ -1,5 +1,6 @@
 package com.bangez.tx.domain.model;
 
+import com.bangez.tx.domain.dto.PointDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,4 +24,5 @@ public class PointModel {
     private String lastChargeDate;
 
     private Long userId;
+
 }

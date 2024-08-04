@@ -23,4 +23,11 @@ public class UserServiceImpl implements UserService {
         return Messenger.builder().message("True").build();
     }
 
+    @Override
+    public UserDto getDetail(Long userId) {
+        return repository.findById(userId)
+                .map(this::entityToDTO)
+                .orElse(null);
+    }
+
 }
