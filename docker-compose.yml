@@ -2,14 +2,14 @@ version: '3.8'
 services:
   eureka:
     build:
-      context: server/service-discovery
+      context: server/eureka-server
       dockerfile: Dockerfile
-    container_name: eureka-service
+    container_name: eureka-server
     image: hyunji0221/bangez/eureka:latest
     ports:
       - "8761:8761"
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://223.130.152.12:8888/service-discovery-local
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://223.130.152.12:8888/eureka-server-local
     networks:
       - bangez_network
     healthcheck:
@@ -20,14 +20,14 @@ services:
 
   gateway:
     build:
-      context: server/service-gateway
+      context: server/gateway-server
       dockerfile: Dockerfile
-    container_name: gateway-service
+    container_name: gateway-server
     image: hyunji0221/bangez/gateway:latest
     ports:
       - "8000:8000"
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://223.130.152.12:8888/api-gateway-local
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://223.130.152.12:8888/gateway-server-local
     networks:
       - bangez_network
     depends_on:
