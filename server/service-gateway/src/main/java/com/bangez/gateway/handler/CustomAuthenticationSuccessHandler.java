@@ -1,23 +1,21 @@
 package com.bangez.gateway.handler;
 
-import java.net.URI;
-
-import com.bangez.gateway.domain.dto.MessengerDTO;
+import com.bangez.gateway.domain.dto.MessengerDto;
 import com.bangez.gateway.domain.model.PrincipalUserDetails;
-import com.bangez.gateway.service.provider.JwtTokenProvider;
+import com.bangez.gateway.provider.JwtTokenProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Slf4j
 @Component
@@ -69,7 +67,7 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
                                 )
                                 .flatMap(i ->
                                         Mono.just(
-                                                MessengerDTO.builder()
+                                                MessengerDto.builder()
                                                         .message("로그인 성공")
                                                         .build()
                                         )
@@ -86,7 +84,7 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
     }
 
 
-    private byte[] writeValueAsBytes(MessengerDTO messengerDTO) {
+    private byte[] writeValueAsBytes(MessengerDto messengerDTO) {
         try {
             return objectMapper.writeValueAsBytes(messengerDTO);
         } catch (JsonProcessingException e) {

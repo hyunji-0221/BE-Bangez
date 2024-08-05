@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessengerDTO {
+public class MessengerDto {
     private String message;
     private Object data;
     private String accessToken;

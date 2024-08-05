@@ -11,5 +11,5 @@ import reactor.core.publisher.Mono;
 public interface RoomRepository extends ReactiveMongoRepository<RoomModel,String>{
     Mono<RoomModel> getRoomModelBySenderIdAndReceiverId(String userId, String receiverId);
 
-    Flux<RoomModel> getRoomModelsBySenderId(String userId);
+    Flux<RoomModel> findBySenderIdOrReceiverId(String senderId, String receiverId);
 }

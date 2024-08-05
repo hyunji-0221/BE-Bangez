@@ -1,4 +1,4 @@
-package com.bangez.gateway.service.provider;
+package com.bangez.gateway.provider;
 
 import com.bangez.gateway.domain.model.PrincipalUserDetails;
 import com.bangez.gateway.domain.model.UserModel;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ReactiveValueOperations;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -80,7 +79,7 @@ public class JwtTokenProvider{
                 .subject(userDetails.getUsername())
                 .issuer(issuer)
                 .claim("id", userDetails.getUser().getId())
-                .claim("roles", userDetails.getAuthorities().stream().map(i -> i.getAuthority()).toList())
+//                .claim("roles", userDetails.getAuthorities().stream().map(i -> i.getAuthority()).toList())
                 .claim("type", isRefreshToken ? "refresh" : "access")
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plusSeconds(isRefreshToken ? refreshTokenExpired : accessTokenExpired)))

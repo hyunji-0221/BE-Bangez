@@ -1,31 +1,31 @@
 package com.bangez.tx.controller;
 
 import com.bangez.tx.domain.dto.PointDto;
-import com.bangez.tx.domain.model.PointModel;
 import com.bangez.tx.service.impl.PointServiceImpl;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/point")
+@RequiredArgsConstructor
 public class PointController {
     private final PointServiceImpl service;
 
     @GetMapping("/detail/{userId}")
     public ResponseEntity<Integer> getPointDetail(@PathVariable("userId") Long id){
+        log.info("포인트 디테일 id: {}",id);
         return ResponseEntity.ok(service.getPointDetail(id));
     }
 
-    @PutMapping("/deduction/{userId}")
+    @PutMapping("/deduction/{userId}") // 포인트 차감 / accesstoken 코드 받으면 @PathVariable 지우고, accessToken 으로 id 찾기
     public ResponseEntity<PointDto> deductionPoint(@PathVariable("userId") Long userId){
+        log.info("id: {}",userId);
         return ResponseEntity.ok(service.deductionPoint(userId));
     }
+
 }
+
 

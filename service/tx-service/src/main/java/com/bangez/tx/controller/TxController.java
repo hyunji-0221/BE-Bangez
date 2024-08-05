@@ -1,24 +1,17 @@
 package com.bangez.tx.controller;
 
 import com.bangez.tx.domain.dto.TxDto;
-import com.bangez.tx.domain.model.TxModel;
 import com.bangez.tx.service.impl.PointServiceImpl;
 import com.bangez.tx.service.impl.TxServiceImpl;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TxController {
 
-    private final TxServiceImpl service;
+    private final TxServiceImpl txService;
     private final PointServiceImpl pointService;
 
     private IamportClient iamportClient;
@@ -44,7 +37,7 @@ public class TxController {
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
 
-    @PostMapping("/add/{imp_uid}")
+    @PostMapping("/add/{imp_uid}/{userId}")
     public IamportResponse<Payment> addIamport(@PathVariable("imp_uid") String imp_uid,
                                                @PathVariable("userId") Long userId) {
         LocalDateTime date = LocalDateTime.now();
@@ -63,7 +56,7 @@ public class TxController {
                 .txDate(date.format(formatter))
                 .userId(userId)
                 .build();
-        service.saveTx(tx);
+        txService.saveTx(tx);
         pointService.savePoint(payment.getResponse().getAmount(), userId);
 
         return payment;
@@ -71,13 +64,14 @@ public class TxController {
 
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<TxDto>> getTxList(@PathVariable("userId") Long id) {
-        return ResponseEntity.ok(service.getTxList());
+        List<TxDto> txList = txService.getTxList();
+        return ResponseEntity.ok(txList);
     }
 
-    @GetMapping("/detail/{userId}")
-    public ResponseEntity<TxDto> getTxDetail(@PathVariable("userId") Long id) {
-        TxDto tx = service.getTxDetail(id);
-        return ResponseEntity.ok(tx);
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<TxDto> getTxDetail(@PathVariable("id") Long id){
+        log.info("디테일 메소드 id: {}", id);
+        return ResponseEntity.ok(txService.getTxDetail(id));
     }
 
 

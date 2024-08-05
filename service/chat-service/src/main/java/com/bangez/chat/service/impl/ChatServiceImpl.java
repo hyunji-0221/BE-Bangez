@@ -1,7 +1,7 @@
 package com.bangez.chat.service.impl;
+
 import com.bangez.chat.domain.dto.ChatDto;
 import com.bangez.chat.domain.dto.Messenger;
-import com.bangez.chat.domain.model.ChatModel;
 import com.bangez.chat.repository.ChatRepository;
 import com.bangez.chat.service.ChatService;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final Map<String, Sinks.Many<ServerSentEvent<ChatDto>>> chatSinks = new HashMap<>();
     private final Map<String, Sinks.Many<ServerSentEvent<ChatDto>>> notificationSinks = new HashMap<>();
@@ -57,17 +57,27 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public Flux<ServerSentEvent<ChatDto>> connectionNotification(String userId){
-        Sinks.Many<ServerSentEvent<ChatDto>> sink = Sinks.many().replay().all();
+    public Flux<ServerSentEvent<ChatDto>> connectionNotification(String userId) {
+        Sinks.Many<ServerSentEvent<ChatDto>> chatSink = Sinks.many().replay().all();
         chatRepository.findByReceiverIdAndReadFalse(userId)
                 .map(this::convertToDto)
                 .map(chat -> ServerSentEvent.builder(chat)
                         .event("notification")
                         .data(chat)
                         .build())
-                .doOnNext(sink::tryEmitNext)
+                .doOnNext(chatSink::tryEmitNext)
                 .subscribe();
-        return sink.asFlux();
+
+        Flux<ServerSentEvent<ChatDto>> heartbeat = Flux.interval(Duration.ofSeconds(30))
+                .map(tick -> ServerSentEvent.<ChatDto>builder()
+                        .event("heartbeat")
+                        .data(new ChatDto())
+                        .build());
+
+        Flux<ServerSentEvent<ChatDto>> chatFlux = chatSink.asFlux()
+                .mergeWith(heartbeat);
+
+        return chatFlux.doOnCancel(() -> handleNotificationCancel(userId));
     }
 
     @Override
@@ -82,13 +92,13 @@ public class ChatServiceImpl implements ChatService{
                     if (sink != null) {
                         sink.tryEmitNext(ServerSentEvent.builder(savedMessage).build());
                     }
-                    if (!savedMessage.isRead()) { // savedMessage.isRead() == false
+                    if (!savedMessage.isRead()) {
                         notifyUnreadMessage(savedMessage);
                     }
                 });
     }
 
-    @Override
+        @Override
     public Mono<Messenger> markMessageRead(String roomId, String userId) {
         log.info("챗서비스의 마크메시지리드");
         return chatRepository.findByChatRoomIdAndReceiverIdAndReadFalse(roomId, userId)
@@ -99,23 +109,25 @@ public class ChatServiceImpl implements ChatService{
                 .then(Mono.just(Messenger.builder().message("SUCCESS TO CHANGE MESSAGES STATUS").build()));
     }
 
+
     private void handleCancel(String roomId) {
         log.info("service doOnCancel roomId : {}", roomId);
         Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.remove(roomId);
         if (sink != null) sink.tryEmitComplete();
     }
 
-    private void notifyUnreadMessage(ChatDto chatDto) {
+        private void notifyUnreadMessage(ChatDto chatDto) {
         Sinks.Many<ServerSentEvent<ChatDto>> notificationSink = notificationSinks.get(chatDto.getReceiverId());
         if (notificationSink != null) {
             notificationSink.tryEmitNext(ServerSentEvent.builder(chatDto).build());
         }
     }
 
+
     private void handleNotificationCancel(String userId) {
         log.info("service doOnCancel userId : {}", userId);
         Sinks.Many<ServerSentEvent<ChatDto>> notificationSink = notificationSinks.remove(userId);
         if (notificationSink != null) notificationSink.tryEmitComplete();
     }
-    
+
 }

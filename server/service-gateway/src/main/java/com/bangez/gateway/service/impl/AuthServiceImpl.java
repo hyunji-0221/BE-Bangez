@@ -1,24 +1,27 @@
-package com.bangez.gateway.filter;
+package com.bangez.gateway.service.impl;
 
-import com.bangez.gateway.domain.dto.LoginDTO;
+import com.bangez.gateway.domain.dto.LoginDto;
 import com.bangez.gateway.domain.model.PrincipalUserDetails;
-import com.bangez.gateway.service.provider.JwtTokenProvider;
+import com.bangez.gateway.service.AuthService;
+import com.bangez.gateway.provider.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-@Component
+@Slf4j
+@Service
 @RequiredArgsConstructor
-public class AuthFilter {
-    private final WebClient webClient; //WebClient는 비동기 방식으로 HTTP 요청을 보낼 수 있는 클래스
+public class AuthServiceImpl implements AuthService {
+    private final WebClient webClient;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public Mono<ServerResponse> localLogin(LoginDTO dto) {
+    @Override
+    public Mono<ServerResponse> localLogin(LoginDto dto) {
         return Mono.just(dto)
                 .log()
                 .flatMap(i ->
@@ -29,24 +32,20 @@ public class AuthFilter {
                                 .retrieve()
                                 .bodyToMono(PrincipalUserDetails.class)
                 )
-                .log()
                 .flatMap(i ->
                         jwtTokenProvider.generateToken(i, false)
-                                .log()
                                 .flatMap(accessToken ->
                                         jwtTokenProvider.generateToken(i, true)
-                                                .log()
                                                 .flatMap(refreshToken ->
                                                         ServerResponse.ok()
-                                                                .contentType(MediaType.APPLICATION_JSON)
                                                                 .cookie(
                                                                         ResponseCookie.from("accessToken")
                                                                                 .value(accessToken)
                                                                                 .maxAge(jwtTokenProvider.getAccessTokenExpired())
                                                                                 .path("/")
-                                                                                .sameSite("None") //sameSite는 크로스 도메인에 쿠키가 저장될 수 있도록 함.
-                                                                                .secure(false)
-                                                                                .httpOnly(true)
+                                                                                .sameSite("None")
+                                                                                .secure(true)
+                                                                                .httpOnly(false)
                                                                                 .build()
                                                                 )
                                                                 .cookie(
@@ -55,16 +54,20 @@ public class AuthFilter {
                                                                                 .maxAge(jwtTokenProvider.getRefreshTokenExpired())
                                                                                 .path("/")
                                                                                 .sameSite("None")
-                                                                                .secure(false)
-                                                                                .httpOnly(true)
+                                                                                .secure(true)
+                                                                                .httpOnly(false)
                                                                                 .build()
                                                                 )
                                                                 .bodyValue(Boolean.TRUE)
                                                 )
                                 )
-                );
+                )
+                ;
+
+
     }
 
+    @Override
     public Mono<ServerResponse> refresh(String refreshToken) {
         return Mono.just(refreshToken)
                 .flatMap(i -> Mono.just(jwtTokenProvider.removeBearer(refreshToken)))
@@ -86,7 +89,9 @@ public class AuthFilter {
                 );
     }
 
+    @Override
     public Mono<ServerResponse> logout(String refreshToken) {
+        log.info("로그아웃 서비스");
         return Mono.just(refreshToken)
                 .flatMap(i -> Mono.just(jwtTokenProvider.removeBearer(refreshToken)))
                 .filter(i -> jwtTokenProvider.isTokenValid(refreshToken, true))
@@ -94,4 +99,5 @@ public class AuthFilter {
                 .filterWhen(i -> jwtTokenProvider.removeTokenInRedis(refreshToken))
                 .flatMap(i -> ServerResponse.ok().build());
     }
+
 }

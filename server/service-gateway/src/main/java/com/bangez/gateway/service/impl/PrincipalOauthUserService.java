@@ -1,10 +1,8 @@
 package com.bangez.gateway.service.impl;
 
-import com.bangez.gateway.domain.model.OAuth2UserDTO;
+import com.bangez.gateway.domain.model.OAuth2UserDto;
 import com.bangez.gateway.domain.model.PrincipalUserDetails;
-import com.bangez.gateway.domain.model.UserModel;
 import com.bangez.gateway.domain.vo.Registration;
-import com.bangez.gateway.domain.vo.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.userinfo.DefaultReactiveOAuth2UserService;
@@ -15,8 +13,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +31,7 @@ public class PrincipalOauthUserService implements ReactiveOAuth2UserService<OAut
                                         .log()
                                         .flatMap(clientId -> Mono.just(Registration.valueOf(clientId.toUpperCase())))
                                         .flatMap(registration ->
-                                                        Mono.just(OAuth2UserDTO.of(registration, attributes))
+                                                        Mono.just(OAuth2UserDto.of(registration, attributes))
                                                                 .flatMap(oauth2UserDTO ->
                                                                         webClient.post()
                                                                                 .uri("lb://user-service/auth/oauth2/" + registration.name().toLowerCase())
@@ -46,14 +42,14 @@ public class PrincipalOauthUserService implements ReactiveOAuth2UserService<OAut
                                                                 )
 //                                                                .flatMap(oAuth2UserInfo ->
 //                                                                        Mono.just(new PrincipalUserDetails(
-//                                                                                        UserModel.builder()
-//                                                                                                .email(oAuth2UserInfo.email())
-//                                                                                                .name(oAuth2UserInfo.name())
-//                                                                                                .profile(oAuth2UserInfo.profile())
-//                                                                                                .roles(List.of(Role.ROLE_USER))
-//                                                                                                .build(),
-//                                                                                        attributes
-//                                                                                )))
+//                                                                                UserModel.builder()
+//                                                                                        .email(oAuth2UserInfo.email())
+//                                                                                        .name(oAuth2UserInfo.name())
+//                                                                                        .profile(oAuth2UserInfo.profile())
+//                                                                                        .roles(List.of(Role.ROLE_USER))
+//                                                                                        .build(),
+//                                                                                attributes
+//                                                                        )))
                                         )
                 );
     }

@@ -30,6 +30,7 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public void savePoint(BigDecimal amount, Long userId) {
+        log.info("포인트 적립 : {}", amount);
         int point = 0;
         if (pointRepository.existsByUserId(userId)) {
             PointModel model = pointRepository.findByUserId(userId);

@@ -37,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Flux<RoomDto> getRoomList(String userId) {
-        return roomRepository.getRoomModelsBySenderId(userId)
+        return roomRepository.findBySenderIdOrReceiverId(userId, userId)
                 .map(this::convertToDto);
     }
 

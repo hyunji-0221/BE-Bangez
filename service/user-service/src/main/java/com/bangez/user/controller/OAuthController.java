@@ -1,7 +1,6 @@
 package com.bangez.user.controller;
 
 import com.bangez.user.domain.dto.OAuth2UserDto;
-import com.bangez.user.domain.dto.OAuthUserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

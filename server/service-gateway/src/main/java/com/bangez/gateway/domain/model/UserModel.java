@@ -20,4 +20,5 @@ public class UserModel {
     private String profile;
     private List<Role> roles;
     private Registration registration;
+
 }
