@@ -9,4 +9,5 @@ include 'service:chat-service'
 include 'server:service-discovery'
 include 'server:service-gateway'
 include 'server:service-config'
-include 'service-secret'
+include 'server:service-secret'
+
