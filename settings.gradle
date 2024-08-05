@@ -6,8 +6,8 @@ include 'service:land-service'
 include 'service:analysis-service'
 include 'service:chat-service'
 
-include 'server:service-discovery'
-include 'server:service-gateway'
-include 'server:service-config'
-include 'server:service-secret'
+include 'server:eureka-server'
+include 'server:gateway-server'
+include 'server:config-server'
+include 'server:secret-server'
 
