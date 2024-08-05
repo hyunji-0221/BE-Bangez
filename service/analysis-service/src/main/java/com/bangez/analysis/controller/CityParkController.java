@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Log4j2
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/city-park")

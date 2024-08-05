@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 @Repository
-public interface AptTradeRepository extends ReactiveMongoRepository<AptTrade, String>, AptTradeDao {
+public interface AptTradeRepository extends ReactiveMongoRepository<AptTrade, String> {
     Flux<AptTrade> findByLegalCode(String legalCode);
+    Flux<AptTrade> findByWard(String region);
+
 }

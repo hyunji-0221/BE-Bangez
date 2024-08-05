@@ -1,11 +1,10 @@
 package com.bangez.land.domain.model;
+
 import lombok.*;
-
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 
 
 @Builder
@@ -15,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Document(collection = "apartments")
 public class ApartmentModel {
+
     @Id
     private String id;
     private long atclNo ;
@@ -37,4 +37,6 @@ public class ApartmentModel {
     private String town;
     private String roadAddress;
     private String address;
+    private String image; //이미지
+    private String imageTwo; //이미지
 }

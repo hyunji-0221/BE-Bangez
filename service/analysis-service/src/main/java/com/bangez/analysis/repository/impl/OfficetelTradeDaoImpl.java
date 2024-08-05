@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class OfficetelTradeDaoImpl  implements OfficetelTradeDao {
     private final ReactiveMongoOperations operations;
 
+    @Override
     public Mono<Map<String, Long>> plotGraphAvgCostByDate() {
 
         Criteria criteria = new Criteria();
@@ -28,7 +29,7 @@ public class OfficetelTradeDaoImpl  implements OfficetelTradeDao {
                 .collect(Collectors.groupingBy(i->i.getContractDate(),
                         Collectors.collectingAndThen(Collectors.averagingLong(i->i.getTradePrice()), i-> i.longValue())));
     }
-
+    @Override
     public Mono<Map<String,Long>> plotGraphSaleCountByDate() {
         Criteria criteria = new Criteria();
         Query query = new Query(criteria);
@@ -41,7 +42,7 @@ public class OfficetelTradeDaoImpl  implements OfficetelTradeDao {
                 .collect(Collectors.groupingBy(i->i.getContractDate(), Collectors.counting()));
 
     }
-
+    @Override
     public Mono<Map<String,Long>> plotGraphSalesCountByRegionForMonth(String date) {
         Criteria criteria = Criteria.where("contract_date").regex("^" + date);
         Query query = new Query(criteria);
@@ -54,7 +55,7 @@ public class OfficetelTradeDaoImpl  implements OfficetelTradeDao {
                         .build()))
                 .collect(Collectors.groupingBy(i-> i.getContractDate(), Collectors.counting()));
     }
-
+    @Override
     public Mono<Map<Long, Long>> plotGraphCostByArea() {
         Criteria criteria = new Criteria();
 

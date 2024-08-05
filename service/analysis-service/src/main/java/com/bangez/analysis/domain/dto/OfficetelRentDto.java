@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.stereotype.Component;
 
 @Data
 @Builder
@@ -26,4 +24,3 @@ public class OfficetelRentDto {
     private Long securityDeposit;
     private String ward;
 }
-

@@ -1,4 +1,5 @@
 package com.bangez.analysis.controller;
+
 import com.bangez.analysis.domain.dto.AptRentDto;
 import com.bangez.analysis.router.AptRentRouter;
 
@@ -12,21 +13,23 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/apt-rent")
+@RequestMapping(path = "/api/apt_rent")
 public class AptRentController {
-        private final AptRentRouter router;
+
+    private final AptRentRouter router;
 
     @GetMapping(path = "/statistics")
     public ResponseEntity<?> searchPlayer(
             @RequestParam(value = "select", required = true) String select,
-            @RequestParam(value = "date", required = false) String date
+            @RequestParam(value = "date", required = false) String date,
+            @RequestParam(value = "region", required = false) String region
     ) {
-        Mono<?> monoMap = router.execute(select, date);
+        Mono<?> monoMap = router.execute(select, date, region);
 
         return ResponseEntity.ok(monoMap);
     }
-    
+
 }
+

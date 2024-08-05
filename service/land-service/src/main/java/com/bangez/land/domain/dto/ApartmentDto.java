@@ -1,7 +1,12 @@
 package com.bangez.land.domain.dto;
-import lombok.*;
-import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Data
@@ -9,6 +14,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApartmentDto {
+
     private String id;
     private long atclNo ; //네이버 번호(사용x)
     private String atclNm; //아파트/상가 명
@@ -30,5 +36,6 @@ public class ApartmentDto {
     private String town; //동 이름
     private String roadAddress; //도로명 주소
     private String address; //지번 주소
-    
+    private String image; //이미지
+    private String imageTwo; //이미지
 }

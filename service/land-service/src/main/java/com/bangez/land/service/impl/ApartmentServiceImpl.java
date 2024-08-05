@@ -1,21 +1,22 @@
 package com.bangez.land.service.impl;
 
-import org.springframework.stereotype.Service;
-
 import com.bangez.land.domain.dto.ApartmentDto;
 import com.bangez.land.domain.mapper.ApartmentMapper;
 import com.bangez.land.domain.model.ApartmentModel;
 import com.bangez.land.repository.ApartmentRepository;
 import com.bangez.land.service.ApartmentService;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+
+@Slf4j
 @Service
-public class ApartmentServiceImpl implements ApartmentService{
+public class ApartmentServiceImpl implements ApartmentService {
     private final ApartmentMapper apartmentMapper;
     private final ApartmentRepository apartmentRepository;
-
+    
     public ApartmentServiceImpl(ApartmentMapper apartmentMapper, ApartmentRepository apartmentRepository) {
         this.apartmentMapper = apartmentMapper;
         this.apartmentRepository = apartmentRepository;
@@ -32,35 +33,35 @@ public class ApartmentServiceImpl implements ApartmentService{
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Apartment not found")));
     }
     @Override
-    public Mono<ApartmentDto> createApartment(ApartmentDto ApartmentDto) {
-        ApartmentModel model = apartmentMapper.toModel(ApartmentDto);
+    public Mono<ApartmentDto> createApartment(ApartmentDto apartmentDTO) {
+        ApartmentModel model = apartmentMapper.toModel(apartmentDTO);
         return apartmentRepository.save(model)
                 .map(apartmentMapper::toDTO);
     }
     @Override
-    public Mono<ApartmentDto> updateApartment(String id, ApartmentDto ApartmentDto) {
+    public Mono<ApartmentDto> updateApartment(String id, ApartmentDto apartmentDTO) {
         return apartmentRepository.findById(id)
                 .flatMap(existingApartment -> {
-                    existingApartment.setAtclNo(ApartmentDto.getAtclNo());
-                    existingApartment.setAtclNm(ApartmentDto.getAtclNm());
-                    existingApartment.setRletTpNm(ApartmentDto.getRletTpNm());
-                    existingApartment.setTradTpNm(ApartmentDto.getTradTpNm());
-                    existingApartment.setFlrInfo(ApartmentDto.getFlrInfo());
-                    existingApartment.setPrc(ApartmentDto.getPrc());
-                    existingApartment.setRentPrc(ApartmentDto.getRentPrc());
-                    existingApartment.setHanPrc(ApartmentDto.getHanPrc());
-                    existingApartment.setSpc1(ApartmentDto.getSpc1());
-                    existingApartment.setSpc2(ApartmentDto.getSpc2());
-                    existingApartment.setDirection(ApartmentDto.getDirection());
-                    existingApartment.setAtclCfmYmd(ApartmentDto.getAtclCfmYmd());
-                    existingApartment.setLat(ApartmentDto.getLat());
-                    existingApartment.setLng(ApartmentDto.getLng());
-                    existingApartment.setAtclFetrDesc(ApartmentDto.getAtclFetrDesc());
-                    existingApartment.setTagList(ApartmentDto.getTagList());
-                    existingApartment.setBildNm(ApartmentDto.getBildNm());
-                    existingApartment.setTown(ApartmentDto.getTown());
-                    existingApartment.setRoadAddress(ApartmentDto.getRoadAddress());
-                    existingApartment.setAddress(ApartmentDto.getAddress());
+                    existingApartment.setAtclNo(apartmentDTO.getAtclNo());
+                    existingApartment.setAtclNm(apartmentDTO.getAtclNm());
+                    existingApartment.setRletTpNm(apartmentDTO.getRletTpNm());
+                    existingApartment.setTradTpNm(apartmentDTO.getTradTpNm());
+                    existingApartment.setFlrInfo(apartmentDTO.getFlrInfo());
+                    existingApartment.setPrc(apartmentDTO.getPrc());
+                    existingApartment.setRentPrc(apartmentDTO.getRentPrc());
+                    existingApartment.setHanPrc(apartmentDTO.getHanPrc());
+                    existingApartment.setSpc1(apartmentDTO.getSpc1());
+                    existingApartment.setSpc2(apartmentDTO.getSpc2());
+                    existingApartment.setDirection(apartmentDTO.getDirection());
+                    existingApartment.setAtclCfmYmd(apartmentDTO.getAtclCfmYmd());
+                    existingApartment.setLat(apartmentDTO.getLat());
+                    existingApartment.setLng(apartmentDTO.getLng());
+                    existingApartment.setAtclFetrDesc(apartmentDTO.getAtclFetrDesc());
+                    existingApartment.setTagList(apartmentDTO.getTagList());
+                    existingApartment.setBildNm(apartmentDTO.getBildNm());
+                    existingApartment.setTown(apartmentDTO.getTown());
+                    existingApartment.setRoadAddress(apartmentDTO.getRoadAddress());
+                    existingApartment.setAddress(apartmentDTO.getAddress());
                     return apartmentRepository.save(existingApartment);
                 })
                 .map(apartmentMapper::toDTO)
@@ -79,6 +80,14 @@ public class ApartmentServiceImpl implements ApartmentService{
     @Override
     public Flux<ApartmentDto> searchApartmentsByPrice(int minPrice, int maxPrice) {
         return apartmentRepository.findByPrcBetween(minPrice, maxPrice)
+                .map(apartmentMapper::toDTO);
+    }
+
+    @Override
+    public Flux<ApartmentDto> getFilteredApartments(String rletTpNm, String tradTpNm, Integer minPrc, Integer maxPrc, Integer minSpc1, Integer maxSpc1, String town) {
+        log.info("Fetching filtered apartments with criteria - rletTpNm: {}, tradTpNm: {}, minPrc: {}, maxPrc: {}, minSpc1: {}, maxSpc1: {}, town: {}",
+                rletTpNm, tradTpNm, minPrc, maxPrc, minSpc1, maxSpc1, town);
+        return apartmentRepository.findByCriteria(rletTpNm, tradTpNm, minPrc, maxPrc, minSpc1, maxSpc1, town)
                 .map(apartmentMapper::toDTO);
     }
 }

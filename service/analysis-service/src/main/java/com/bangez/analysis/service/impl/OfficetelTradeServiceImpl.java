@@ -1,4 +1,5 @@
 package com.bangez.analysis.service.impl;
+
 import com.bangez.analysis.service.OfficetelTradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OfficetelTradeServiceImpl implements OfficetelTradeService{
+public class OfficetelTradeServiceImpl implements OfficetelTradeService {
     @Override
     public Map<?, ?> plotGraphAvgCostByDate() {
         return null;
@@ -27,8 +28,7 @@ public class OfficetelTradeServiceImpl implements OfficetelTradeService{
         return null;
     }
     @Override
-    public Map<?,?> plotGraphCostRaiseByRegionFor3Month() {
+    public Map<?,?> plotGraphCostRaisebyRegionFor3Month() {
         return null;
     }
-    
 }

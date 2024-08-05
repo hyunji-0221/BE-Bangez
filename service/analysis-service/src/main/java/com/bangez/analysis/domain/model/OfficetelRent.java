@@ -1,7 +1,10 @@
 package com.bangez.analysis.domain.model;
 
 import com.opencsv.bean.CsvBindByName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -45,8 +48,8 @@ public class OfficetelRent {
     @Field("net_leasable_area")
     private Float netLeasableArea;
 
-    @CsvBindByName(column = "officeTel_name")
-    @Field("officeTel_name")
+    @CsvBindByName(column = "officetel_name")
+    @Field("officetel_name")
     private String officetelName;
 
     @CsvBindByName(column = "security_deposit")
@@ -56,3 +59,4 @@ public class OfficetelRent {
     @CsvBindByName(column = "ward")
     private String ward;
 }
+

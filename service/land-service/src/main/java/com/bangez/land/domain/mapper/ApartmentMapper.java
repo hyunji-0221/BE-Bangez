@@ -1,8 +1,9 @@
 package com.bangez.land.domain.mapper;
+
+import com.bangez.land.domain.dto.ApartmentDto;
+import com.bangez.land.domain.model.ApartmentModel;
 import org.springframework.stereotype.Component;
 
-import com.bangez.land.domain.model.ApartmentModel;
-import com.bangez.land.domain.dto.ApartmentDto;
 @Component
 public class ApartmentMapper {
     public ApartmentModel toModel(ApartmentDto dto) {
@@ -53,6 +54,8 @@ public class ApartmentMapper {
                 .town(model.getTown())
                 .roadAddress(model.getRoadAddress())
                 .address(model.getAddress())
+                .image(model.getImage())
+                .imageTwo(model.getImageTwo())
                 .build();
     }
 }
