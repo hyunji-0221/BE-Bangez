@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
@@ -28,18 +29,18 @@ public class ImportCSV {
 
     public Flux<AptRent> importCSV() throws FileNotFoundException {
 
-        String currentDir = System.getProperty("user.dir");
-        System.out.println("Current directory: " + currentDir);
+//        String currentDir = System.getProperty("user.dir");
+//        System.out.println("Current directory: " + currentDir);
 
-        CSVReader reader = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/school.csv"));
+        CSVReader reader = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/school.csv"));
         List<School> entities = new CsvToBeanBuilder<School>(reader)
                 .withType(School.class)
                 .build()
                 .parse();
 
         repository.saveAll(entities).subscribe();
-
-        CSVReader reader2 = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/officetel_trade.csv"));
+//
+        CSVReader reader2 = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/officetel_trade.csv"));
         List<OfficetelTrade> entities2 = new CsvToBeanBuilder<OfficetelTrade>(reader2)
                 .withType(OfficetelTrade.class)
                 .build()
@@ -48,7 +49,7 @@ public class ImportCSV {
 
         officetelTradeRepository.saveAll(entities2).subscribe();
 
-        CSVReader reader3 = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/officetel_rent.csv"));
+        CSVReader reader3 = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/officetel_rent.csv"));
         List<OfficetelRent> entities3 = new CsvToBeanBuilder<OfficetelRent>(reader3)
                 .withType(OfficetelRent.class)
                 .build()
@@ -56,7 +57,7 @@ public class ImportCSV {
 
         officetelRentRepository.saveAll(entities3).subscribe();
 
-        CSVReader reader4 = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/city_park.csv"));
+        CSVReader reader4 = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/city_park.csv"));
         List<CityPark> entities4 = new CsvToBeanBuilder<CityPark>(reader4)
                 .withType(CityPark.class)
                 .build()
@@ -64,7 +65,7 @@ public class ImportCSV {
 
         parkRepository.saveAll(entities4).subscribe();
 
-        CSVReader reader5 = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/apt_trade.csv"));
+        CSVReader reader5 = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/apt_trade.csv"));
         List<AptTrade> entities5 = new CsvToBeanBuilder<AptTrade>(reader5)
                 .withType(AptTrade.class)
                 .build()
@@ -72,7 +73,7 @@ public class ImportCSV {
 
         aptTradeRepository.saveAll(entities5).subscribe();
 
-        CSVReader reader6 = new CSVReader(new FileReader("src/main/java/com/bangez/analysis/common/static_data/apt_rent.csv"));
+        CSVReader reader6 = new CSVReader(new FileReader("service/analysis-service/src/main/java/com/bangez/analysis/static_data/apt_rent.csv"));
         List<AptRent> entities6 = new CsvToBeanBuilder<AptRent>(reader6)
                 .withType(AptRent.class)
                 .build()

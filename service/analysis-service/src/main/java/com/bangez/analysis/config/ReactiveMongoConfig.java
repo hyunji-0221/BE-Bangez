@@ -1,4 +1,4 @@
-package com.bangez.analysis.common.config;
+package com.bangez.analysis.config;
 
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;

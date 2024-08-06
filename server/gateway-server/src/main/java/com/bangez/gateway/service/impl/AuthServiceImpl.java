@@ -91,12 +91,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Mono<ServerResponse> logout(String refreshToken) {
-        log.info("로그아웃 서비스");
+        log.info("로그아웃 서비스 : {}", refreshToken);
         return Mono.just(refreshToken)
-                .flatMap(i -> Mono.just(jwtTokenProvider.removeBearer(refreshToken)))
-                .filter(i -> jwtTokenProvider.isTokenValid(refreshToken, true))
-                .filterWhen(i -> jwtTokenProvider.isTokenInRedis(refreshToken))
-                .filterWhen(i -> jwtTokenProvider.removeTokenInRedis(refreshToken))
+                .flatMap(i -> Mono.just(jwtTokenProvider.removeBearer(i)))
+                .filter(i -> jwtTokenProvider.isTokenValid(i, true))
+                .filterWhen(jwtTokenProvider::isTokenInRedis)
+                .filterWhen(jwtTokenProvider::removeTokenInRedis)
                 .flatMap(i -> ServerResponse.ok().build());
     }
 

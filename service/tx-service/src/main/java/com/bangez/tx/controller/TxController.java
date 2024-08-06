@@ -44,7 +44,6 @@ public class TxController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
 
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
-
         TxDto tx = TxDto.builder()
                 .impUid(payment.getResponse().getImpUid())
                 .merchantUid(payment.getResponse().getMerchantUid())

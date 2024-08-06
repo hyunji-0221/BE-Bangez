@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ReactiveValueOperations;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtTokenProvider{
@@ -79,7 +80,7 @@ public class JwtTokenProvider{
                 .subject(userDetails.getUsername())
                 .issuer(issuer)
                 .claim("id", userDetails.getUser().getId())
-//                .claim("roles", userDetails.getAuthorities().stream().map(i -> i.getAuthority()).toList())
+                .claim("roles", userDetails.getAuthorities().stream().map(i -> i.getAuthority()).toList())
                 .claim("type", isRefreshToken ? "refresh" : "access")
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plusSeconds(isRefreshToken ? refreshTokenExpired : accessTokenExpired)))
@@ -122,6 +123,7 @@ public class JwtTokenProvider{
     }
 
     public String removeBearer(String bearerToken){
+        log.info(":::remove Bearer::: {}", bearerToken);
         return bearerToken.replace("Bearer ", "");
     }
 
@@ -130,6 +132,6 @@ public class JwtTokenProvider{
     }
 
     public Mono<Boolean> removeTokenInRedis(String token){
-        return reactiveValueOperations.delete(token);
+         return reactiveValueOperations.delete(token);
     }
 }

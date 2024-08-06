@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 
 @RestController
 @RequiredArgsConstructor
-public class controller {
+public class Controller {
     private final ImportCSV importCSV;
     @PostMapping("/save_mongo")
     public void saveMongoDB() throws FileNotFoundException {

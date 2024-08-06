@@ -1,4 +1,4 @@
-package com.bangez.analysis.common.domain;
+package com.bangez.analysis.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
