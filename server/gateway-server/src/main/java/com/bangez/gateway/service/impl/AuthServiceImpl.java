@@ -95,8 +95,10 @@ public class AuthServiceImpl implements AuthService {
         return Mono.just(refreshToken)
                 .flatMap(i -> Mono.just(jwtTokenProvider.removeBearer(i)))
                 .filter(i -> jwtTokenProvider.isTokenValid(i, true))
-                .filterWhen(jwtTokenProvider::isTokenInRedis)
-                .filterWhen(jwtTokenProvider::removeTokenInRedis)
+                .flatMap(i ->
+                        Mono.just(jwtTokenProvider.extractPrincipalUserDetails(i))
+                                .filterWhen(user -> jwtTokenProvider.removeTokenInRedis(user.getUsername()))
+                )
                 .flatMap(i -> ServerResponse.ok().build());
     }
 
