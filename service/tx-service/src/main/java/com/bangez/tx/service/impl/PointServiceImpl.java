@@ -1,6 +1,7 @@
 package com.bangez.tx.service.impl;
 
 
+import com.bangez.tx.domain.MessageVo;
 import com.bangez.tx.domain.dto.PointDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -64,22 +65,21 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public PointDto deductionPoint(Long userId) {
+    public MessageVo deductionPoint(Long userId) {
         int deductedPoint = 0;
         PointModel point = pointRepository.findByUserId(userId);
         if (point.getPoint() <= 0) {
-            throw new IllegalArgumentException("포인트가 부족합니다.");
+            return MessageVo.builder().message("FAILURE").build();
         } else {
-            deductedPoint = point.getPoint() - 1;
+            deductedPoint = point.getPoint() - 10;
         }
-        return convertToDto(pointRepository.save(PointModel.builder()
+        pointRepository.save(PointModel.builder()
                 .pointId(point.getPointId())
                 .userId(userId)
                 .point(deductedPoint)
                 .lastChargeDate(date.format(formatter))
-                .build())
-        );
-
+                .build());
+        return MessageVo.builder().message("SUCCESS").build();
     }
 }
 

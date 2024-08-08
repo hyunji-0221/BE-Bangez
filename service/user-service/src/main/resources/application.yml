@@ -4,4 +4,4 @@ spring:
   profiles:
     active: local
   config:
-    import: optional:configserver:http://223.130.152.12:8888
+    import: optional:configserver:http://223.130.150.183:8888

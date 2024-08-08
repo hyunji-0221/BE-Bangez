@@ -1,5 +1,6 @@
 package com.bangez.tx.controller;
 
+import com.bangez.tx.domain.MessageVo;
 import com.bangez.tx.domain.dto.PointDto;
 import com.bangez.tx.service.impl.PointServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class PointController {
     }
 
     @PutMapping("/deduction/{userId}") // 포인트 차감 / accesstoken 코드 받으면 @PathVariable 지우고, accessToken 으로 id 찾기
-    public ResponseEntity<PointDto> deductionPoint(@PathVariable("userId") Long userId){
+    public ResponseEntity<MessageVo> deductionPoint(@PathVariable("userId") Long userId){
         log.info("id: {}",userId);
         return ResponseEntity.ok(service.deductionPoint(userId));
     }
