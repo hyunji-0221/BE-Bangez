@@ -22,9 +22,7 @@ public class ChatController {
     @GetMapping(path = "/sse/{roomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<ChatDto>> connectSSE(@PathVariable("roomId") String roomId) {
         log.info("커넥트 chat controller streamMessages");
-        String userId = "1";
         return chatServiceImpl.connectChat(roomId);
-//                .doOnSubscribe(subscription -> chatService.markMessagesAsRead(roomId, userId).subscribe());
     }
 
     @PostMapping("/save") // 채팅 메시지 전송

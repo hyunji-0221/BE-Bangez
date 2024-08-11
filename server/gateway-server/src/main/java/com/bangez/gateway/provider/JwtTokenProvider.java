@@ -80,6 +80,7 @@ public class JwtTokenProvider{
                 .subject(userDetails.getUsername())
                 .issuer(issuer)
                 .claim("id", userDetails.getUser().getId())
+                .claim("name", userDetails.getUser().getName())
                 .claim("roles", userDetails.getAuthorities().stream().map(i -> i.getAuthority()).toList())
                 .claim("type", isRefreshToken ? "refresh" : "access")
                 .issuedAt(Date.from(Instant.now()))

@@ -7,6 +7,7 @@ import com.bangez.user.domain.vo.MessengerVO;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public interface SellArticleService {
     MessengerVO save(SellArticleDto sellArticleDTO);
@@ -14,7 +15,7 @@ public interface SellArticleService {
     List<SellArticleDto> findAll();
     SellArticle modify(Long id, SellArticle newSellArticle);
 
-
+    Optional<SellArticleDto> findById(Long id);
     default SellArticleDto entityToDTO(SellArticle sellArticle){
         return SellArticleDto.builder()
                 .id(sellArticle.getId())

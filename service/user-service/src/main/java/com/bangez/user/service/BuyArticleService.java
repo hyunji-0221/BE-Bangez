@@ -7,13 +7,14 @@ import com.bangez.user.domain.vo.MessengerVO;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public interface BuyArticleService {
     MessengerVO save(BuyArticleDto buyArticleDTO);
     MessengerVO deleteById(Long id);
     List<BuyArticleDto> findAll();
     BuyArticle modify(Long id, BuyArticle newBuyArticle);
-
+    Optional<BuyArticleDto> findById(Long id);
 
     default BuyArticleDto entityToDTO(BuyArticle buyArticle){
         return BuyArticleDto.builder()

@@ -23,10 +23,12 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
 
     @Override
-    public Mono<RoomDto> openRoom(String userId, String receiverId) {
+    public Mono<RoomDto> openRoom(RoomDto roomDto) {
+        String userId = roomDto.getSenderId();
+        String receiverId = roomDto.getReceiverId();
         return roomRepository.getRoomModelBySenderIdAndReceiverId(userId, receiverId)
                 .switchIfEmpty(roomRepository.save(RoomModel.builder()
-                        .roomTitle("test1")
+                        .roomTitle(roomDto.getRoomTitle())
                         .senderId(userId)
                         .receiverId(receiverId)
                         .createDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")))

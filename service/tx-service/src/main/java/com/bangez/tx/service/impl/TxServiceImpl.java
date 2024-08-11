@@ -13,6 +13,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,20 @@ public class TxServiceImpl implements TxService {
     private final PointRepository pointRepository;
 
     @Override
-    public void saveTx(TxDto tx) {
+    public void saveTx(IamportResponse<Payment> payment, Long userId) {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
+        TxDto tx = TxDto.builder()
+                .impUid(payment.getResponse().getImpUid())
+                .merchantUid(payment.getResponse().getMerchantUid())
+                .propertyName(payment.getResponse().getName())
+                .propertyAmount(Long.parseLong(payment.getResponse().getAmount().toString()))
+                .buyerEmail(payment.getResponse().getBuyerEmail())
+                .buyerName(payment.getResponse().getBuyerName())
+                .buyerTel(payment.getResponse().getBuyerTel())
+                .txDate(String.valueOf(payment.getResponse().getPaidAt()))
+                .userId(userId)
+                .build();
         txRepository.save(convertToModel(tx));
     }
     @Override

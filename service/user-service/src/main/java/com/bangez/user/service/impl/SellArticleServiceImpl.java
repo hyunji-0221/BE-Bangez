@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +48,10 @@ public class SellArticleServiceImpl implements SellArticleService {
             }
             return repository.save(sellArticle);
         }).orElseThrow(()->new RuntimeException("게시글을 찾을 수 없음"));
+    }
+
+    @Override
+    public Optional<SellArticleDto> findById(Long id) {
+        return repository.findById(id).map(this ::entityToDTO);
     }
 }

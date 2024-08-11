@@ -5,10 +5,12 @@ import java.util.List;
 import com.bangez.tx.domain.dto.PointDto;
 import com.bangez.tx.domain.dto.TxDto;
 import com.bangez.tx.domain.model.TxModel;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 
 public interface TxService {
 
-    void saveTx(TxDto tx);
+    void saveTx(IamportResponse<Payment> payment, Long userId);
 
     List<TxDto> getTxList();
 

@@ -40,24 +40,9 @@ public class TxController {
     @PostMapping("/add/{imp_uid}/{userId}")
     public IamportResponse<Payment> addIamport(@PathVariable("imp_uid") String imp_uid,
                                                @PathVariable("userId") Long userId) {
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
-
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
-        TxDto tx = TxDto.builder()
-                .impUid(payment.getResponse().getImpUid())
-                .merchantUid(payment.getResponse().getMerchantUid())
-                .propertyName(payment.getResponse().getName())
-                .propertyAmount(Long.parseLong(payment.getResponse().getAmount().toString()))
-                .buyerEmail(payment.getResponse().getBuyerEmail())
-                .buyerName(payment.getResponse().getBuyerName())
-                .buyerTel(payment.getResponse().getBuyerTel())
-                .txDate(date.format(formatter))
-                .userId(userId)
-                .build();
-        txService.saveTx(tx);
+        txService.saveTx(payment, userId);
         pointService.savePoint(payment.getResponse().getAmount(), userId);
-
         return payment;
     }
 

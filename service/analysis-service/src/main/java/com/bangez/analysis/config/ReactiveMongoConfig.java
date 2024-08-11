@@ -21,6 +21,6 @@ public class ReactiveMongoConfig {
 
     @Bean
     public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
-        return new ReactiveMongoTemplate(reactiveMongoClient(), "mongo_db");
+        return new ReactiveMongoTemplate(reactiveMongoClient(), "bangez_db");
     }
 }

@@ -9,5 +9,5 @@ include 'service:chat-service'
 include 'server:eureka-server'
 include 'server:gateway-server'
 include 'server:config-server'
-include 'server:secret-server'
+//include 'server:secret-server'
 

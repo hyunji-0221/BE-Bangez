@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface RoomService {
-    Mono<RoomDto> openRoom(String userId, String receiverId);
+    Mono<RoomDto> openRoom(RoomDto roomDto);
 
     Flux<RoomDto> getRoomList(String userId);
 

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/sell-article")
@@ -42,5 +43,10 @@ public class SellArticleController {
         return ResponseEntity.ok(service.modify(id, newSellArticle));
     }
 
+    @GetMapping(path = "/detail")
+    public ResponseEntity<Optional<SellArticleDto>> findById(@RequestParam Long id) {
+        log.info("입력받은 정보 : {}", id );
+        return ResponseEntity.ok(service.findById(id));
+    }
 
 }

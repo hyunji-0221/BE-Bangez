@@ -17,11 +17,9 @@ import reactor.core.publisher.Mono;
 public class RoomController {
     private final RoomServiceImpl roomServiceImpl;
 
-    @GetMapping(value = "/open-room/{userId}/{receiverId}")
-    public Mono<RoomDto> test(@PathVariable("userId") String userId,
-                              @PathVariable("receiverId")String receiverId) {
-        log.info("RoomController userId / receiverId: {} / {}",userId,receiverId);
-        return roomServiceImpl.openRoom(userId,receiverId);
+    @PostMapping(value = "/open-room")
+    public Mono<RoomDto> saveRoom(@RequestBody RoomDto roomDto) {
+        return roomServiceImpl.openRoom(roomDto);
     }
 
     @GetMapping(value = "/get-room-list/{userId}")
