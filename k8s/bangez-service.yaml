@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-server
+  labels:
+    app: eureka-server
+spec:
+  type: LoadBalancer
+  ports:
+    - name: eureka-server
+      protocol: TCP
+      port: 8761
+      targetPort: 8761
+  selector:
+    app: eureka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-server
+  labels:
+    app: gateway-server
+spec:
+  type: LoadBalancer
+  ports:
+    - name: gateway-server
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tx-service
+  labels:
+    app: tx-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: tx-service
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: tx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: user-service
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
+  selector:
+    app: user
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: land-service
+  labels:
+    app: land-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: land-service
+      protocol: TCP
+      port: 8083
+      targetPort: 8083
+  selector:
+    app: land
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analysis-service
+  labels:
+    app: analysis-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: analysis-service
+      protocol: TCP
+      port: 8084
+      targetPort: 8084
+  selector:
+    app: analysis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service
+  labels:
+    app: chat-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: chat-service
+      protocol: TCP
+      port: 8085
+      targetPort: 8085
+  selector:
+    app: chat
+---
