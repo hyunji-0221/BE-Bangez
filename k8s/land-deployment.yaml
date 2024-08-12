@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: land-deployment
+  labels:
+    app: land
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: land
+  template:
+    metadata:
+      labels:
+        app: land
+    spec:
+      containers:
+        - name: land
+          image: hyunji0221/land:latest
+          ports:
+            - containerPort: 8083

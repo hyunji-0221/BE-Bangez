@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tx-deployment
+  labels:
+    app: tx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tx
+  template:
+    metadata:
+      labels:
+        app: tx
+    spec:
+      containers:
+        - name: tx
+          image: hyunji0221/tx:latest
+          ports:
+            - containerPort: 8081
