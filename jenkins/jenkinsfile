@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     services.split(',').each { service ->
-                        sh "docker tag $COMPOSE_TAGNAME/${service}:$PUSH_VERSION $DOCKERHUB_CREDENTIALS_USR/$service:$PUSH_VERSION"
+                        sh "docker tag tag $DOCKERHUB_CREDENTIALS_USR/$COMPOSE_TAGNAME/$service:$PUSH_VERSION $DOCKERHUB_CREDENTIALS_USR/$service:$PUSH_VERSION"
                     }
                 }
             }
