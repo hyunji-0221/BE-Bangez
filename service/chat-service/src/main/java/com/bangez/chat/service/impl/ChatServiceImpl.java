@@ -30,10 +30,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Flux<ServerSentEvent<ChatDto>> connectChat(String roomId) {
-        log.info("connectChat service roomId : {}", roomId);
-
         Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.computeIfAbsent(roomId, key -> {
-            log.info("Creating new sink for roomId : {}", roomId);
             Sinks.Many<ServerSentEvent<ChatDto>> chatSink = Sinks.many().replay().all();
             chatRepository.findByChatRoomId(roomId)
                     .map(this::convertToDto)
@@ -46,7 +43,6 @@ public class ChatServiceImpl implements ChatService {
         Flux<ServerSentEvent<ChatDto>> chatFlux = sink.asFlux()
                 .mergeWith(heartBeat());
 
-        log.info("Existing sink for roomId : {}", roomId);
         return chatFlux.doOnCancel(() -> handleCancel(roomId));
     }
 
@@ -70,12 +66,10 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Mono<ChatDto> saveMessage(ChatDto chatDto) {
-        log.info("saveMessage service: {}", chatDto);
         chatDto.setTimeStamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         return chatRepository.save(convertToEntity(chatDto))
                 .map(this::convertToDto)
                 .doOnSuccess(savedMessage -> {
-                    log.info("Saved message: {}", savedMessage);
                     Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.get(savedMessage.getChatRoomId());
                     if (sink != null) {
                         sink.tryEmitNext(ServerSentEvent.builder(savedMessage).build());
@@ -88,7 +82,6 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Mono<Messenger> markMessageRead(String roomId, String userId) {
-        log.info("챗서비스의 마크메시지리드");
         return chatRepository.findByChatRoomIdAndReceiverIdAndReadFalse(roomId, userId)
                 .flatMap(chat -> {
                     chat.setRead(true);
@@ -98,7 +91,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void handleCancel(String roomId) {
-        log.info("service doOnCancel roomId : {}", roomId);
         Sinks.Many<ServerSentEvent<ChatDto>> sink = chatSinks.remove(roomId);
         if (sink != null) sink.tryEmitComplete();
     }
@@ -111,13 +103,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void handleNotificationCancel(String userId) {
-        log.info("service doOnCancel userId : {}", userId);
         Sinks.Many<ServerSentEvent<ChatDto>> notificationSink = notificationSinks.remove(userId);
         if (notificationSink != null) notificationSink.tryEmitComplete();
     }
 
     private Flux<ServerSentEvent<ChatDto>> heartBeat() {
-        return Flux.interval(Duration.ofSeconds(30))
+        return Flux.interval(Duration.ofSeconds(86400000))
                 .map(tick -> ServerSentEvent.<ChatDto>builder()
                         .event("heartbeat")
                         .data(new ChatDto())

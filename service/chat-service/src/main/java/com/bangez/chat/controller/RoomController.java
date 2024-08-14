@@ -12,25 +12,19 @@ import reactor.core.publisher.Mono;
 
 @Log4j2
 @RestController
-//@RequestMapping("/room")
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomServiceImpl roomServiceImpl;
-
     @PostMapping(value = "/open-room")
     public Mono<RoomDto> saveRoom(@RequestBody RoomDto roomDto) {
         return roomServiceImpl.openRoom(roomDto);
     }
-
     @GetMapping(value = "/get-room-list/{userId}")
     public Flux<RoomDto> getRoomList(@PathVariable("userId") String userId) {
-        log.info("userId: {}",userId);
         return roomServiceImpl.getRoomList(userId);
     }
-
     @DeleteMapping(value = "/delete-room/{roomId}")
     public Mono<Messenger> deleteRoom(@PathVariable("roomId") String roomId) {
-        log.info("roomId: {}",roomId);
         return roomServiceImpl.deleteRoom(roomId);
     }
 }

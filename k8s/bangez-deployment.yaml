@@ -42,7 +42,7 @@ spec:
           image: hyunji0221/gateway:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment

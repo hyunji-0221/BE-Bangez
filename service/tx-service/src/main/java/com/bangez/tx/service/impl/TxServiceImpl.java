@@ -22,14 +22,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TxServiceImpl implements TxService {
-
     private final TxRepository txRepository;
-    private final PointRepository pointRepository;
-
     @Override
     public void saveTx(IamportResponse<Payment> payment, Long userId) {
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
         TxDto tx = TxDto.builder()
                 .impUid(payment.getResponse().getImpUid())
                 .merchantUid(payment.getResponse().getMerchantUid())

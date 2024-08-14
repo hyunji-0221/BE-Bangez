@@ -23,12 +23,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
-
     private final PointRepository pointRepository;
-
     LocalDateTime date = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd/HH:mm:ss");
-
     @Override
     public void savePoint(BigDecimal amount, Long userId) {
         log.info("포인트 적립 : {}", amount);

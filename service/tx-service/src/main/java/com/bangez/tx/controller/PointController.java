@@ -14,16 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PointController {
     private final PointServiceImpl service;
-
     @GetMapping("/detail/{userId}")
     public ResponseEntity<Integer> getPointDetail(@PathVariable("userId") Long id){
-        log.info("포인트 디테일 id: {}",id);
         return ResponseEntity.ok(service.getPointDetail(id));
     }
-
     @PutMapping("/deduction/{userId}") // 포인트 차감 / accesstoken 코드 받으면 @PathVariable 지우고, accessToken 으로 id 찾기
     public ResponseEntity<MessageVo> deductionPoint(@PathVariable("userId") Long userId){
-        log.info("id: {}",userId);
         return ResponseEntity.ok(service.deductionPoint(userId));
     }
 

@@ -20,10 +20,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class TxController {
-
     private final TxServiceImpl txService;
     private final PointServiceImpl pointService;
-
     private IamportClient iamportClient;
 
     @Value("${imp.api.key}")
@@ -54,7 +52,6 @@ public class TxController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<TxDto> getTxDetail(@PathVariable("id") Long id){
-        log.info("디테일 메소드 id: {}", id);
         return ResponseEntity.ok(txService.getTxDetail(id));
     }
 

@@ -20,10 +20,8 @@ import java.time.ZoneId;
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
-
     private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
-
     @Override
     public Mono<RoomDto> openRoom(RoomDto roomDto) {
         String userId = roomDto.getSenderId();
@@ -38,13 +36,11 @@ public class RoomServiceImpl implements RoomService {
                 )
                 .map(this::convertToDto);
     }
-
     @Override
     public Flux<RoomDto> getRoomList(String userId) {
         return roomRepository.findBySenderIdOrReceiverId(userId, userId)
                 .map(this::convertToDto);
     }
-
     @Override
     public Mono<Messenger> deleteRoom(String roomId) {
         return roomRepository.existsById(roomId)
