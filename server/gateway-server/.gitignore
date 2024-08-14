@@ -37,4 +37,4 @@ out/
 .vscode/
 
 mycert.p12
-bangezcert.p12
+#bangezcert.p12
