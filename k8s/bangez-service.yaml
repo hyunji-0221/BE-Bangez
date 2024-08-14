@@ -37,7 +37,7 @@ metadata:
   labels:
     app: tx-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: tx-service
       protocol: TCP
@@ -53,7 +53,7 @@ metadata:
   labels:
     app: user-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: user-service
       protocol: TCP
@@ -69,7 +69,7 @@ metadata:
   labels:
     app: land-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: land-service
       protocol: TCP
@@ -85,7 +85,7 @@ metadata:
   labels:
     app: analysis-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: analysis-service
       protocol: TCP
@@ -101,7 +101,7 @@ metadata:
   labels:
     app: chat-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: chat-service
       protocol: TCP

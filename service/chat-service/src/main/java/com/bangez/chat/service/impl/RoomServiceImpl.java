@@ -2,6 +2,7 @@ package com.bangez.chat.service.impl;
 import com.bangez.chat.domain.dto.Messenger;
 import com.bangez.chat.domain.dto.RoomDto;
 import com.bangez.chat.domain.model.RoomModel;
+import com.bangez.chat.repository.ChatRepository;
 import com.bangez.chat.repository.RoomRepository;
 import com.bangez.chat.service.RoomService;
 
@@ -21,6 +22,7 @@ import java.time.ZoneId;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
+    private final ChatRepository chatRepository;
 
     @Override
     public Mono<RoomDto> openRoom(RoomDto roomDto) {
@@ -49,10 +51,13 @@ public class RoomServiceImpl implements RoomService {
                 .flatMap(exists -> {
                     if (exists) {
                         return roomRepository.deleteById(roomId)
+                                .then(chatRepository.deleteByChatRoomId(roomId))
                                 .then(Mono.just(Messenger.builder().message("SUCCESS").build()));
                     } else {
                         return Mono.just(Messenger.builder().message("FAILURE").build());
                     }
-                });
+                })
+                .onErrorResume(e -> Mono.just(Messenger.builder().message("ERROR: " + e.getMessage()).build()));
     }
+
 }

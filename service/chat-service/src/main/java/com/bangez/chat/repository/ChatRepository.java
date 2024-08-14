@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.bangez.chat.domain.model.ChatModel;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @Repository
@@ -15,5 +16,6 @@ public interface ChatRepository extends ReactiveMongoRepository<ChatModel,String
 
     Flux<ChatModel> findByChatRoomIdAndReceiverIdAndReadFalse(String roomId, String userId);
 
+    Mono<Void> deleteByChatRoomId(String roomId);
 
 }

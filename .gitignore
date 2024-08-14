@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+/mysql/demo/var/lib/mysql/*
+*.sock
