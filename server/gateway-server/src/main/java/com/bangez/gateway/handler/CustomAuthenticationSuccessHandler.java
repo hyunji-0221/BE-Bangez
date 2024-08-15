@@ -26,19 +26,19 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
 
     @Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
-        log.info("::::::webFilterExchange 정보: "+webFilterExchange);
-        log.info("::::::authentication 정보: "+authentication);
-        log.info("::::::getAuthorities 정보: "+authentication.getAuthorities());
-        log.info("::::::getCredentials 정보: "+authentication.getCredentials());
+        log.info("::::::webFilterExchange 정보: " + webFilterExchange);
+        log.info("::::::authentication 정보: " + authentication);
+        log.info("::::::getAuthorities 정보: " + authentication.getAuthorities());
+        log.info("::::::getCredentials 정보: " + authentication.getCredentials());
 
         webFilterExchange.getExchange().getResponse().setStatusCode(HttpStatus.FOUND);
-//        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://www.api.eomhyunji.bangez.com/login/callback"));
-        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://localhost:3000/login/callback"));
+//        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://www.api.eomhyunji.bangez.com"));
+        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://localhost:3000"));
         webFilterExchange.getExchange().getResponse().getHeaders().add("Content-Type", "application/json");
 
         return webFilterExchange.getExchange().getResponse()
                 .writeWith(
-                        jwtTokenProvider.generateToken((PrincipalUserDetails)authentication.getPrincipal(), false)
+                        jwtTokenProvider.generateToken((PrincipalUserDetails) authentication.getPrincipal(), false)
                                 .doOnNext(accessToken ->
                                         webFilterExchange
                                                 .getExchange()
@@ -48,11 +48,12 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
                                                         ResponseCookie.from("accessToken", accessToken)
                                                                 .path("/")
                                                                 .maxAge(jwtTokenProvider.getAccessTokenExpired())
-                                                                // .httpOnly(true)
+                                                                .httpOnly(true)
+                                                                .secure(true)
                                                                 .build()
                                                 )
                                 )
-                                .flatMap(i -> jwtTokenProvider.generateToken((PrincipalUserDetails)authentication.getPrincipal(), true))
+                                .flatMap(i -> jwtTokenProvider.generateToken((PrincipalUserDetails) authentication.getPrincipal(), true))
                                 .doOnNext(refreshToken ->
                                         webFilterExchange
                                                 .getExchange()
@@ -62,7 +63,8 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
                                                         ResponseCookie.from("refreshToken", refreshToken)
                                                                 .path("/")
                                                                 .maxAge(jwtTokenProvider.getRefreshTokenExpired())
-                                                                // .httpOnly(true)
+                                                                .httpOnly(true)
+                                                                .secure(true)
                                                                 .build()
                                                 )
                                 )
