@@ -28,8 +28,6 @@ public interface TxService {
                 .buyerTel(txDto.getBuyerTel())
                 .txDate(txDto.getTxDate())
                 .userId(txDto.getUserId())
-                .apartmentId(txDto.getApartmentId())
-                .officetelId(txDto.getOfficetelId())
                 .build();
     }
 
@@ -45,8 +43,6 @@ public interface TxService {
                 .buyerTel(txModel.getBuyerTel())
                 .txDate(txModel.getTxDate())
                 .userId(txModel.getUserId())
-                .apartmentId(txModel.getApartmentId())
-                .officetelId(txModel.getOfficetelId())
                 .build();
     }
 
