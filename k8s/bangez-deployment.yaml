@@ -47,7 +47,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tx-deployment
+  name: tx-service
   labels:
     app: tx
 spec:
@@ -70,7 +70,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-deployment
+  name: user-service
   labels:
     app: user
 spec:
@@ -93,7 +93,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: land-deployment
+  name: land-service
   labels:
     app: land
 spec:
@@ -116,7 +116,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: analysis-deployment
+  name: analysis-service
   labels:
     app: analysis
 spec:
@@ -139,7 +139,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chat-deployment
+  name: chat-service
   labels:
     app: chat
 spec:
