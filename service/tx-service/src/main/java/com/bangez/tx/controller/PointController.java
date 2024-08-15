@@ -18,7 +18,7 @@ public class PointController {
     public ResponseEntity<Integer> getPointDetail(@PathVariable("userId") Long id){
         return ResponseEntity.ok(service.getPointDetail(id));
     }
-    @PutMapping("/deduction/{userId}") // 포인트 차감 / accesstoken 코드 받으면 @PathVariable 지우고, accessToken 으로 id 찾기
+    @PutMapping("/deduction/{userId}")
     public ResponseEntity<MessageVo> deductionPoint(@PathVariable("userId") Long userId){
         return ResponseEntity.ok(service.deductionPoint(userId));
     }

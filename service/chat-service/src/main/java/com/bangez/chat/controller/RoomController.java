@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 @Log4j2
 @RestController
+@RequestMapping("/room")
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomServiceImpl roomServiceImpl;

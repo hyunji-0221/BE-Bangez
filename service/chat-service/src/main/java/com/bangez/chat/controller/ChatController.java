@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
-@RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatServiceImpl chatServiceImpl;

@@ -23,6 +23,4 @@ public class TxDto {
     private String txDate;
 
     private Long userId;
-    private Long apartmentId;
-    private Long officetelId;
 }
