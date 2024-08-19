@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
                                                 .value(accessToken)
                                                 .maxAge(jwtTokenProvider.getAccessTokenExpired())
                                                 .path("/")
-                                                 .httpOnly(true)
+                                                .httpOnly(false)
                                                 .secure(true)
                                                 .build()
                                 )
