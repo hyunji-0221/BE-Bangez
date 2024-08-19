@@ -6,13 +6,13 @@ spring:
   config:
     import: optional:configserver:http://223.130.150.183:8888
 
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 1026414078050-tlolrarvjarsd7svs9raqvmvremre1vu.apps.googleusercontent.com
-            client-secret: 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
-            scope:
-              - profile
-              - email
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 1026414078050-tlolrarvjarsd7svs9raqvmvremre1vu.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - profile
+#              - email
