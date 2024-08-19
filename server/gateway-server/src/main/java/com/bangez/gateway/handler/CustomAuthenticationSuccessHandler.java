@@ -32,8 +32,8 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
         log.info("::::::getCredentials 정보: " + authentication.getCredentials());
 
         webFilterExchange.getExchange().getResponse().setStatusCode(HttpStatus.FOUND);
-//        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://www.api.eomhyunji.bangez.com"));
-        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://localhost:3000"));
+        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("https://www.taeho.site"));
+//        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create("http://localhost:3000"));
         webFilterExchange.getExchange().getResponse().getHeaders().add("Content-Type", "application/json");
 
         return webFilterExchange.getExchange().getResponse()
